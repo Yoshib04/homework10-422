@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Event {
+  id            Int            @id @default(autoincrement())
+  title         String
+  description   String
+  location      String
+  startsAt      DateTime
+  priceCents    Int
+  capacity      Int
+  registrations Registration[]
+}
+
+model Registration {
+  id              Int      @id @default(autoincrement())
+  eventId         Int
+  attendeeName    String
+  attendeeEmail   String
+  quantity        Int
+  totalCents      Int
+  status          String   @default("PENDING")
+  paymentIntentId String?  @unique
+  createdAt       DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
